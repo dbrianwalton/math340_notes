@@ -1,0 +1,469 @@
+<?xml version='1.0' encoding='utf-8'?>
+<chapter xml:id="ch_mp_intro" xmlns:xi="http://www.w3.org/2001/XInclude">
+
+  <title>Mathematical Programming</title>
+
+  <introduction>
+    <p>
+        In the context of this class, <term>mathematical programming</term> is about <em>planning</em> or <em>decision making</em>.
+        We are going to be focusing on using optimization to make plans or decisions.
+        In a business setting, this is sometimes called <term>operations research</term> or <term>management science</term>.
+        In other settings, it might be called <term>decision theory</term> or more simply <term>optimization</term>.
+    </p>
+  </introduction>
+
+  <section xml:id="sec_mp_calc_review">
+    <title>Optimization from Calculus</title>
+    <p>
+        One of the major selling points of calculus is that it allows us to find extreme values of functions.
+        Given a differentiable function <m>f : \mathbb{R} \to \mathbb{R}</m> (meaning the input is a real number and the output is a real number), calculus taught us that when restricted to a closed interval <m>[a,b]</m>, the extreme values are either <m>f(a)</m> or <m>f(b)</m> (end points) or <m>f(c)</m> where <m>f'(c)=0</m> (critical points).
+    </p>
+    <p>
+        One of the major applications introduced in Calculus 1 is optimization with simple constraints.
+    </p>
+    <example>
+        <statement>
+            <p>
+                Find positive real numbers <m>x,y</m> that make <m>x+y</m> as small as possible with <m>xy = 4</m>.
+            </p>
+            <p>
+                The variables <m>x</m> and <m>y</m> are called the <term>decision variables</term> because those are the values that we are in charge of <em>choosing</em>.
+                We create an <term>objective function</term> that depends on the decision variables
+                <me>f(x,y) = x+y</me>
+                the represents the quantity that is optimized,in this case <em>minimized</em>.
+                The additional equation <m>xy=4</m> is called the <term>constraint</term>.
+            </p>
+            <p>
+                The strategy introduced in Calculus 1 is to convert this problem into a single-variable function.
+                The constraint allows us to solve for <m>y</m> in terms of <m>x</m>:
+                <md>
+                    <mrow>xy = 4</mrow>
+                    <mrow>y = \frac{4}{x}</mrow>.
+                </md>
+                Substituting this expression into the objective function creates a function of one variable:
+                <me>F(x) = f(x,\frac{4}{x}) = x + \frac{4}{x}</me>
+                The relevant interval is <m>x \in (0,\infty)</m>.
+                Because
+                <md>
+                    <mrow>\lim_{x \to 0^+} F(x) = \infty</mrow>
+                    <mrow>\lim_{x \to \infty} F(x) = \infty</mrow>
+                </md>
+                the minimum must occur at an internal point where <m>F'(x) = 0</m>:
+                <md>
+                    <mrow>F'(x) = 1 - \frac{4}{x^2}</mrow>
+                    <mrow>1-\frac{4}{x^2} = 0</mrow>
+                    <mrow>x^2 - 4 = 0</mrow>
+                    <mrow>(x-2)(x+2) = 0</mrow>
+                </md>
+                So the critical points are at <m>x=-2</m> (not in domain of interest) and <m>x=2</m>.
+                The second derivative <m>F''(x) = 8x^{-3}</m> is always positive for <m>x \gt 0</m> so <m>F(x)</m> is concave up on <m>(0,\infty)</m>, giving us another reason to know that the minimum occurs at <m>x=2</m>, so that we also have <m>y=\frac{4}{x} = 2</m>.
+            </p>
+        </statement>
+    </example>
+    <p>
+        In Calculus 3 (multivariable calculus), we revisit the idea of optimization for functions that depend on multiple variables.
+        Critical points are where <em>all</em> of the partial derivatives are equal to zero.
+        A critical point could be a local maximum, a local minimum, or perhaps a saddle point.
+        The second derivative test is much more complicated and probably wasn't even taught (it's about eigenvalues of the derivative matrix).
+        Or you might have looked at the function along various paths through the critical point (e.g., different lines).
+    </p>
+    <example>
+        <statement>
+            <p>
+                Consider <m>f: \mathbb{R}^2 \to \mathbb{R}</m> defined by <m>f(x,y) = x^4 - 2x^2 + y^2</m>.
+                Find and characterize the critical points.
+            </p>
+            <p>
+                Because <m>f</m> is a polynomial, the partial derivatives are easy:
+                <md>
+                    <mrow>f_x(x,y) = 4x^3 - 4x</mrow>
+                    <mrow>f_x(x,y) = 2y</mrow>
+                </md>
+                This problem completely separates the variables.
+                We have <m>f_x = 0</m> when <m>x=0,\pm 1</m> and we have <m>f_y = 0</m> when <m>y = 0</m>.
+                Consequently, there are three critical points:
+                <me>(x,y) \in \{ (-1,0), (0,0), (1,0) \}</me>.
+            </p>
+            <p>
+                The Hessian matrix contains the second partial derivatives:
+                <md>
+                    <mrow>
+                        H = f'' &amp;= \begin{bmatrix}
+                         f_{xx} &amp; f_{xy} \\
+                         f_{yx} &amp; f_{yy}
+                        \end{bmatrix}
+                    </mrow>
+                    <mrow>
+                         &amp;= \begin{bmatrix}
+                         12x^2 - 4 &amp; 0 \\
+                         0 &amp; 2
+                        \end{bmatrix}
+                    </mrow>
+                </md>
+                Evaluating this matrix at each of the critical points results in three diagonal matrices, so that the eigenvalues are the same as the diagonal values.
+                <md>
+                    <mrow>
+                        H(-1,0) = \begin{bmatrix} 8 &amp; 0 \\ 0 &amp; 2 \end{bmatrix}
+                    </mrow>
+                    <mrow>
+                        H(0,0) = \begin{bmatrix} -4 &amp; 0 \\ 0 &amp; 2 \end{bmatrix}
+                    </mrow>
+                    <mrow>
+                        H(1,0) = \begin{bmatrix} 8 &amp; 0 \\ 0 &amp; 2 \end{bmatrix}
+                    </mrow>
+                </md>
+                When all eigenvalues are <em>positive</em>, the function is locally concave up so that we have a local minimum at both <m>(\pm 1, 0)</m>.
+                When the eigenvalues have opposite signs, this means there are directions with opposite concavity, meaning that the function has a <em>saddle point</em> at <m>(0,0)</m>.
+            </p>
+        </statement>
+    </example>
+    <p>
+        One of the methods introduced in Calculus 3 is the use of Lagrange multipliers to solve constrained optimization problems.
+        We will look at this at much greater depth later this semester.
+        But for now, let us rethink the constrained optimization problem from earlier in the context of Lagrange multipliers.
+    </p>
+    <example>
+        <statement>
+            <p>
+                Find the positive values for <m>x,y</m> so that <m>x+y</m> is as small as possible subject to <m>xy=4</m>.
+            </p>
+            <p>
+                The method of Lagrange multipliers considers the objective function <m>f(x,y) = x+y</m> as a multi-variable function and augments the problem by introducing a <em>new</em> variable (called the Lagrange multiplier) and an augmented objective function:
+                <me>G(x,y,\lambda) = f(x,y) - \lambda \cdot (xy-4) = x+y - \lambda xy- 4 \lambda</me>.
+                That is, we <em>subtract</em> the multiplier <m>\lambda</m> times an expression whose <em>zeros</em> correspond to the constraint equation.
+            </p>
+            <p>
+                The critical equations for the augmented objective function become:
+                <md>
+                    <mrow>g_x = 1 - \lambda y = 0</mrow>,
+                    <mrow>g_y = 1 - \lambda x = 0</mrow>,
+                    <mrow>g_\lambda = xy - 4 = 0</mrow>.
+                </md>
+                Notice that the critical equation associated with <m>\lambda</m> recovers the original constraint.
+                The other two equations give <m>\lambda y = 1</m> and <m>\lambda x = 1</m>.
+                Solving the three equation simultaneously gives <m>x=2</m>, <m>y=2</m>, and <m>\lambda = \frac{1}{2}</m>.
+                The values <m>(x,y)=(2,2)</m> is the same solution we found using Calculus 1 methods.
+            </p>
+        </statement>
+    </example>
+    <p>
+        These ideas summarize the tools we learned from calculus about optimization of functions.
+    </p>
+  </section>
+  <section>
+    <title>Modeling</title>
+    <p>
+        A major emphasis for this class is <term>modeling</term>.
+        That is, we will spend significant effort on the process of <em>creating</em> mathematical problems that represent physical scenarios.
+        We want to think about two conceptual environments<mdash />the physical world where we want to find an answer to a question and the abstract mathematical world where can pose and solve problems using mathematical tools.
+        Modeling is the art and practice of creating a connection between these two environments.
+    </p>
+    <p>
+        There are two major translation stages.
+        The first is where we go from the physical world to a mathematical representation.
+        In this stage, we need to identify the key assumptions, observations, and data that are available in the physical world and find ways to represent those ideas and values as mathematical statements.
+        Data become numerical values (with understood units of measurement).
+        Assumptions generally are restated as equations or inequalities.
+        This means that we need to be able to identify variables, whether they are values or functions.
+    </p>
+    <p>
+        In addition, we need to convert the physical question into a mathematical goal or task that we do with the statements and data.
+        For some settings, this might be using the equations to make predictions, such as solving a system of equations or solving a differential equation.
+        In this course, we will be using models that involve optimization, so that we will formulate our assumptions in a way to define a <term>mathematical program</term> which we then attempt to solve.
+    </p>
+    <p>
+        Once we complete the mathematical analysis using the abstract model, we return to the physical world.
+        This typically involves <em>interpreting</em> the mathematical results in terms of their original context.
+    </p>
+    <p>
+        Here is an example of a problem that frequently is used in Calculus 1 textbooks and classes.
+    </p>
+    <example>
+        <statement>
+            <p>
+                A construction project needs to lay a utility line that starts at one corner of a rectangular lot (say 120 meters by 50 meters) and ends at the diagonally opposite corner. The cost of laying line along the 120 meter edge of the rectangle adjacent to the starting point is $200 per meter, while the cost within the rectangle or along the other edges is $300 per meter. The project manager would like to complete the project with minimal cost.
+            </p>
+            <p>
+                Formulate the mathematical programming problem associated with this question.
+            </p>
+        </statement>
+        <solution>
+            <p>
+                Although the manager might hypothetically choose a meandering path inside the lot, once the line leaves the cheaper adjacent edge, it will always be cheaper to choose a straight linear path to the corner to minimize costs of that portion of the line.
+                We realize that the problem is really about choosing how much of the line should be put along the adjacent edge and how much should be laid through the interior of the lot.
+            </p>
+            <p>
+                Sometimes it helps to think about edge (extreme) cases.
+                For example, the project might be designed to just go through the lot directly from corner to corner along the diagonal of the rectangle.
+                The diagonal of this rectangle has length 130 meters, so this choice would cost <m>300 \cdot 130 = 39,000</m> dollars.
+                Alternatively, the project might go all the way along the long edge and then up the side.
+                This plan would also (surprisingly) cost <m>200 \cdot 120 + 300 \cdot 50 = 39,000</m> dollars.
+            </p>
+            <p>
+                In order to create the mathematical model, we need to think about how we can state this type of calculation for an <em>arbitrary</em> plan chosen by the project manager.
+                What choice does the manager have?
+                They can choose how far along the adjacent edge to lay the line before switching to laying line through the interior.
+                This ability to choose allows us to define a <term>decision variable</term>.
+                We then calculate how much line is laid on the adjacent edge, how much is laid through the interior, and use those lengths to calculate the total cost.
+                The manager wishes to minimize total cost.
+            </p>
+            <p>
+                The previous paragraph represents the type of process we would typically go through to identify what assumptions or rules exist in the physical world.
+                We then need to translate to the mathematical world by creating corresponding equations.
+                We will define our variable(s) and their relevant domains, state our objective, and identify any constraints.
+                Let <m>x</m> be the length of the utility line laid along the adjacent edge at lower cost.
+                The domain for <m>x</m> is <m>0 \le x \le 120</m>, coming from the physical structure of the problem.
+                The length of line laid through the interior $L_I$ is the length of the hypotenuse of a triangle with legs of length <m>120-x</m> (adjacent edge) and <m>50</m> (opposite edge):
+                <me>L_I = \sqrt{(120-x)^2 + 50^2}</me>.
+                The total cost can then be calculated:
+                <me>C = 200 x + 300 L_I = 200x + 300 \sqrt{(120-x)^2+50^2}</me>.
+            </p>
+            <p>
+                Without the explanatory discussion, the mathematical programming problem could be restated more directly:
+                <md>
+                    <mrow>
+                        \text{minimize} &amp; C = 200x + 300\sqrt{(120-x)^2+50^2}
+                    </mrow>
+                    <mrow>
+                        \text{subject to} &amp; x \ge 0, x \le 120
+                    </mrow>
+                </md>
+            </p>
+        </solution>
+    </example>
+  </section>
+  <section xml:id="sec_mp_examples">
+    <title>Examples of Programming/Optimization</title>
+    <paragraphs>
+        <title>Constrained Production</title>
+        <p>
+            I really like playing with Legos and have acquired many parts from various sets over the years.
+            Many of the parts that different models have are common so that the parts can be used interchangeably.
+            Suppose there are three simple models that bring me joy that involve several different components in common as well as some parts that may only be used in one model.
+        </p>
+        <p>
+            For simplicity, my models only use 5 different components.
+            The table below shows a summary of each of the components, giving a total number in my pile of parts as well as how many are required to build each model.
+        </p>
+        <table>
+            <tabular>
+                <row header="yes">
+                    <cell>Component</cell>
+                    <cell>Total Available</cell>
+                    <cell>Basic Dog</cell>
+                    <cell>Duck Dog</cell>
+                    <cell>Kangaroo</cell>
+                </row>
+                <row>
+                    <cell>1x2</cell>
+                    <cell>120</cell>
+                    <cell>3</cell>
+                    <cell>2</cell>
+                    <cell>3</cell>
+                </row>
+                <row>
+                    <cell>1x4</cell>
+                    <cell>30</cell>
+                    <cell>0</cell>
+                    <cell>0</cell>
+                    <cell>3</cell>
+                </row>
+                <row>
+                    <cell>2x2</cell>
+                    <cell>80</cell>
+                    <cell>1</cell>
+                    <cell>0</cell>
+                    <cell>3</cell>
+                </row>
+                <row>
+                    <cell>2x3</cell>
+                    <cell>60</cell>
+                    <cell>0</cell>
+                    <cell>13</cell>
+                    <cell>4</cell>
+                </row>
+                <row>
+                    <cell>2x4</cell>
+                    <cell>80</cell>
+                    <cell>1</cell>
+                    <cell>3</cell>
+                    <cell>4</cell>
+                </row>
+            </tabular>
+        </table>
+        <p>
+            I get a different amount of joy for each of the three models.
+            The basic dog is the simplest model, so let's just say it provides 1 unit of joy.
+            The duck dog is more interesting and provides 6 units of joy.
+            The kangaroo is perhaps most interesting and provides 8 units of joy.
+            From my pile of Legos, I want to know how many of each model I should build so that I can maximize my total joy.
+        </p>
+        <p>
+            A more likely application of this type of problem is in manufacturing.
+            Instead of Lego parts, the resources might be physical resources (raw materials, component parts) or capital resources (available labor, production machinery).
+            Instead of joy, the company might be interested in maximizing profit.
+        </p>
+    </paragraphs>
+    <paragraphs>
+        <title>Menu Planning</title>
+        <p>
+            In addition to playing with Legos, I like to eat.
+            Suppose I want to meet a significant part of my daily nutritional needs at breakfast.
+            At the same time, I want to be careful about consuming too many calories, too much fat (especially saturated fat) or too much sodium.
+        </p>
+        <p>
+            I have collected some basic nutritional information about common breakfast items and the recommended nutritional guidelines for my age and sex.
+        </p>
+        <table>
+            <title>Recommended daily nutritional intake for 31-50 year old male</title>
+            <tabular>
+                <row header="yes">
+                    <cell>Element</cell>
+                    <cell>Recommended Daily</cell>
+                </row>
+                <row>
+                    <cell>Calories (kcal)</cell>
+                    <cell>2200</cell>
+                </row>
+                <row>
+                    <cell>Protein (% kcal)</cell>
+                    <cell>10-35</cell>
+                </row>
+                <row>
+                    <cell>Carbohydrates (% kcal)</cell>
+                    <cell>45-65</cell>
+                </row>
+                <row>
+                    <cell>Fats (% kcal)</cell>
+                    <cell>20-35</cell>
+                </row>
+                <row>
+                    <cell>Saturated Fats (% kcal)</cell>
+                    <cell>&lt; 10</cell>
+                </row>
+                <row>
+                    <cell>Cholesterol (mg)</cell>
+                    <cell>&lt; 300</cell>
+                </row>
+                <row>
+                    <cell>Calcium (mg)</cell>
+                    <cell>1000</cell>
+                </row>
+                <row>
+                    <cell>Iron (mg)</cell>
+                    <cell>8</cell>
+                </row>
+                <row>
+                    <cell>Zinc (mg)</cell>
+                    <cell>11</cell>
+                </row>
+                <row>
+                    <cell>Sodium (mg)</cell>
+                    <cell>&lt; 2300</cell>
+                </row>
+                <row>
+                    <cell>Vit A (mg)</cell>
+                    <cell>900</cell>
+                </row>
+                <row>
+                    <cell>Vit D (mg)</cell>
+                    <cell>600</cell>
+                </row>
+                <row>
+                    <cell>Vit C (mg)</cell>
+                    <cell>90</cell>
+                </row>
+                <row>
+                    <cell>Niacin (mg)</cell>
+                    <cell>16</cell>
+                </row>
+            </tabular>
+        </table>
+        <table>
+            <title>Nutritional amounts</title>
+            <tabular>
+                <row header="yes">
+                    <cell>Element</cell>
+                    <cell>Pancake (4-inch)</cell>
+                    <cell>Waffle (4-inch)</cell>
+                    <cell>Egg</cell>
+                </row>
+                <row>
+                    <cell>Calories (kcal)</cell>
+                    <cell>70</cell>
+                    <cell>103</cell>
+                    <cell>70</cell>
+                </row>
+                <row>
+                    <cell>Protein (g)</cell>
+                    <cell>1.33</cell>
+                    <cell>2.37</cell>
+                    <cell>6</cell>
+                </row>
+                <row>
+                    <cell>Carbohydrates (g)</cell>
+                    <cell>15</cell>
+                    <cell>16.3</cell>
+                    <cell>0</cell>
+                </row>
+                <row>
+                    <cell>Fats (g)</cell>
+                    <cell>0.5</cell>
+                    <cell>3.2</cell>
+                    <cell>4.5</cell>
+                </row>
+                <row>
+                    <cell>Saturated Fats (g)</cell>
+                    <cell>0</cell>
+                    <cell>1.5</cell>
+                </row>
+                <row>
+                    <cell>Cholesterol (mg)</cell>
+                    <cell>0</cell>
+                    <cell>215</cell>
+                </row>
+                <row>
+                    <cell>Calcium (mg)</cell>
+                    <cell>27</cell>
+                    <cell>0</cell>
+                </row>
+                <row>
+                    <cell>Iron (mg)</cell>
+                    <cell>0.27</cell>
+                    <cell>0</cell>
+                </row>
+                <row>
+                    <cell>Zinc (mg)</cell>
+                    <cell>0</cell>
+                    <cell>0</cell>
+                </row>
+                <row>
+                    <cell>Sodium (mg)</cell>
+                    <cell>220</cell>
+                    <cell>55</cell>
+                </row>
+                <row>
+                    <cell>Vit A (mg)</cell>
+                    <cell>0</cell>
+                    <cell>0</cell>
+                </row>
+                <row>
+                    <cell>Vit D (mg)</cell>
+                    <cell>0</cell>
+                    <cell>0</cell>
+                </row>
+                <row>
+                    <cell>Vit C (mg)</cell>
+                    <cell>0</cell>
+                    <cell>0</cell>
+                </row>
+                <row>
+                    <cell>Niacin (mg)</cell>
+                    <cell>0</cell>
+                    <cell>0</cell>
+                </row>
+            </tabular>
+        </table>
+    </paragraphs>
+  </section>
+</chapter>
